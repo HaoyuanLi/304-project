@@ -32,7 +32,7 @@ public class RoomTypeSearch extends JPanel {
     private JComboBox rateDrop = new JComboBox(symbolString);
     private JButton searchButton = new JButton("Search");
 
-    String[] aggregationString = {"maximum", "minimum", "average", "number"};
+    String[] aggregationString = {"maximum", "minimum", "average", "number", "sum"};
     private JComboBox aggregationDrop = new JComboBox(aggregationString);
     String[] attributeString = {"accommodation", "size", "rate"};
     private JComboBox attributeDrop = new JComboBox(attributeString);
@@ -113,6 +113,10 @@ public class RoomTypeSearch extends JPanel {
                 if (aggregationDrop.getSelectedIndex() == 2) {
                     result = "The average ";
                 }
+                //TODO
+                if (aggregationDrop.getSelectedIndex() == 4) {
+                    result = "The sum ";
+                }
                 if (aggregationDrop.getSelectedIndex() == 3) {
                     result = "There are ";
                     result = result + resultVal.intValue();
@@ -139,6 +143,7 @@ public class RoomTypeSearch extends JPanel {
                         result = result + "rate is ";
                         result = result + resultVal;
                     }
+
                 }
                 JOptionPane.showMessageDialog(null, result, "Find Result", JOptionPane.INFORMATION_MESSAGE);
             }

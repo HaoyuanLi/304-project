@@ -48,6 +48,11 @@ public class RoomType {
         else if (aggregationDrop == 3) {
             select = select + "COUNT(";
         }
+        //TODO: ADD SUM!!!
+        else if(aggregationDrop == 4){
+            select = select +"SUM(";
+        }
+
         if (attributeDrop == 0) {
             select = select + "accommodation) ";
         }
