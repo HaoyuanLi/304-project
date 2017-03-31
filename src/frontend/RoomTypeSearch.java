@@ -37,6 +37,7 @@ public class RoomTypeSearch extends JPanel {
     String[] attributeString = {"accommodation", "size", "rate"};
     private JComboBox attributeDrop = new JComboBox(attributeString);
     private JButton findButton = new JButton("Find");
+    private JButton doubleAggButton = new JButton("DoubleAggregation");
 
     public RoomTypeSearch(int width, int height) {
         super(new GridBagLayout());
@@ -60,12 +61,10 @@ public class RoomTypeSearch extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (!typeBox.isSelected() && !accommodationBox.isSelected() && !sizeBox.isSelected() && !rateBox.isSelected() && !featuresBox.isSelected()) {
                     JOptionPane.showMessageDialog(null, "Please select at least one attribute", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                else if (accommodationText.getText().equals("") && sizeText.getText().equals("") && rateText.getText().equals("") && !kitchenBox.isSelected() && !bathroomBox.isSelected() && !loungeBox.isSelected()) {
+                } else if (accommodationText.getText().equals("") && sizeText.getText().equals("") && rateText.getText().equals("") && !kitchenBox.isSelected() && !bathroomBox.isSelected() && !loungeBox.isSelected()) {
                     DefaultTableModel dtm = RoomType.searchRoomType(typeBox.isSelected(), accommodationBox.isSelected(), sizeBox.isSelected(), rateBox.isSelected(), featuresBox.isSelected());
                     new ResultTable(dtm).setVisible(true);
-                }
-                else {
+                } else {
                     try {
                         int accommodationVal = -1;
                         int sizeVal = -1;
@@ -89,10 +88,10 @@ public class RoomTypeSearch extends JPanel {
                             }
                         }
                         DefaultTableModel dtm = RoomType.searchRoomType(typeBox.isSelected(), accommodationBox.isSelected(), sizeBox.isSelected(), rateBox.isSelected(), featuresBox.isSelected(),
-                                    accommodationDrop.getSelectedIndex(), accommodationVal, sizeDrop.getSelectedIndex(), sizeVal, rateDrop.getSelectedIndex(), rateVal,
-                                    kitchenBox.isSelected(), bathroomBox.isSelected(), loungeBox.isSelected());
+                                accommodationDrop.getSelectedIndex(), accommodationVal, sizeDrop.getSelectedIndex(), sizeVal, rateDrop.getSelectedIndex(), rateVal,
+                                kitchenBox.isSelected(), bathroomBox.isSelected(), loungeBox.isSelected());
                         new ResultTable(dtm).setVisible(true);
-                    }catch (NumberFormatException ne) {
+                    } catch (NumberFormatException ne) {
                         JOptionPane.showMessageDialog(null, "Please enter valid numbers", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -129,8 +128,7 @@ public class RoomTypeSearch extends JPanel {
                     if (attributeDrop.getSelectedIndex() == 2) {
                         result = result + " different rate values";
                     }
-                }
-                else {
+                } else {
                     if (attributeDrop.getSelectedIndex() == 0) {
                         result = result + "accomodation is ";
                         result = result + resultVal;
@@ -148,6 +146,17 @@ public class RoomTypeSearch extends JPanel {
                 JOptionPane.showMessageDialog(null, result, "Find Result", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+
+        doubleAggButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Number resultVal = RoomType.doubleAggregation();
+
+                JOptionPane.showMessageDialog(null, resultVal, "Aggregation Result: ", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+
     }
 
     private JPanel createAttributePanel() {
@@ -227,6 +236,12 @@ public class RoomTypeSearch extends JPanel {
 
         gbc.gridy = 2;
         findPanel.add(findButton, gbc);
+
+
+        //TODO
+        gbc.gridy = 10;
+        findPanel.add(doubleAggButton, gbc);
+
 
         return findPanel;
     }

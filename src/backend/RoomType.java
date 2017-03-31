@@ -3,6 +3,7 @@ package backend;
 import backend.Connector;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.NumberFormatter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.*;
@@ -66,6 +67,16 @@ public class RoomType {
         String query = select + from;
         System.out.println(query);
         return executeFindQuery(query, attributeDrop);
+    }
+    //TODO
+    public static Number doubleAggregation(){
+        String query = "SELECT Temp.rsize, Temp.agg FROM (SELECT rt.rsize, MIN (rt.rate) as agg FROM roomtype rt GROUP BY rt.rsize) as Temp WHERE Temp.agg = (SELECT MAX(Temp.agg) FROM  Temp)";
+        String select = "SELECT Temp.rsize, Temp.agg ";
+        String from = "FROM (SELECT rt.rsize, MIN (rt.rate) as agg FROM roomtype rt GROUP BY rt.rsize) as Temp ";
+        String where = "WHERE Temp.agg = (SELECT MAX(Temp.agg) FROM  Temp)";
+        String q = select + from + where;
+
+        return executeDoubleAggQuery(q);
     }
 
     private static String createSelectString(boolean typeBox, boolean accommodationBox, boolean sizeBox, boolean rateBox, boolean featuresBox) {
@@ -158,6 +169,22 @@ public class RoomType {
                 rs.next();
                 return rs.getInt(1);
             }
+
+        }catch (SQLException e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();
+            System.out.println(exceptionAsString);
+        }
+        return null;
+    }
+    private static Number executeDoubleAggQuery(String query) {
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            rs.next();
+            return rs.getFloat(1);
 
         }catch (SQLException e) {
             StringWriter sw = new StringWriter();
