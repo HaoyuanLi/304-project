@@ -58,18 +58,19 @@ public class StartInterface extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public static void main(String args[]) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new StartInterface().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        try {
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//
+//        SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                new StartInterface().setVisible(true);
+//            }
+//        });
+//    }
 }
+
