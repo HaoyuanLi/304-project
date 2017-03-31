@@ -69,12 +69,94 @@ public class RoomType {
         return executeFindQuery(query, attributeDrop);
     }
     //TODO
-    public static Number doubleAggregation(){
-        String query = "SELECT Temp.rsize, Temp.agg FROM (SELECT rt.rsize, MIN (rt.rate) as agg FROM roomtype rt GROUP BY rt.rsize) as Temp WHERE Temp.agg = (SELECT MAX(Temp.agg) FROM  Temp)";
-        String select = "SELECT Temp.rsize, Temp.agg ";
-        String from = "FROM (SELECT rt.rsize, MIN (rt.rate) as agg FROM roomtype rt GROUP BY rt.rsize) as Temp ";
-        String where = "WHERE Temp.agg = (SELECT MAX(Temp.agg) FROM  Temp)";
+    public static DefaultTableModel doubleAggregation(int agg1, int agg2, int groupBy ){
+        String query = "SELECT Temp.rsize, Temp.agg FROM (SELECT rt.rsize, MIN(rt.rate) AS agg FROM roomtype rt GROUP BY rt.rsize) Temp WHERE Temp.agg = (SELECT MAX(Temp.agg) FROM  (SELECT rt.rsize, MIN(rt.rate) AS agg FROM roomtype rt GROUP BY rt.rsize) Temp)";
+
+//        String agg1 = "MAX";
+//        String agg2 = "MIN";
+        String aggregation1 = "";
+        if(agg1== 0){
+            aggregation1 = "MAX";
+        }
+        if(agg1== 1){
+            aggregation1 = "MIN";
+        }
+        if(agg1== 2){
+            aggregation1 = "AVG";
+        }
+        if(agg1== 3){
+            aggregation1 = "COUNT";
+        }
+        if(agg1== 4){
+            aggregation1 = "SUM";
+        }
+
+        String aggregation2 = "";
+        if(agg2== 0){
+            aggregation2 = "MAX";
+        }
+        if(agg2== 1){
+            aggregation2 = "MIN";
+        }
+        if(agg2== 2){
+            aggregation2 = "AVG";
+        }
+        if(agg2== 3){
+            aggregation2 = "COUNT";
+        }
+        if(agg2== 4){
+            aggregation2 = "SUM";
+        }
+
+        String select = "SELECT Temp.agg, ";
+        String select2 = "SELECT ";
+
+        if (groupBy ==0) {
+            select = select + "Temp.type, ";
+            select2 = select2 + "rt.type, ";
+        }
+        if (groupBy == 1) {
+            select = select + "Temp.accommodation, ";
+            select2 = select2 + "rt.accommodation, ";
+        }
+        if (groupBy == 2) {
+            select = select + "Temp.rsize, ";
+            select2 = select2 + "rt.rsize, ";
+        }
+        if (groupBy ==3) {
+            select = select + "Temp.rate, ";
+            select2 = select2 + "rt.rate, ";
+        }
+        if (groupBy ==4) {
+            select = select + "Temp.features, ";
+            select2 = select2 + "rt.features, ";
+        }
+
+        String gb = "";
+
+        if(groupBy == 0){
+            gb = "rt.type";
+        }
+        else if (groupBy == 1){
+            gb = "rt.accommodation";
+        }
+        else if (groupBy == 2){
+            gb = "rt.rsize";
+        }
+        else if (groupBy == 3){
+            gb = "rt.rate";
+        }
+        else if (groupBy == 4){
+            gb = "rt.features";
+        }
+
+        select = select.substring(0, select.length() - 2) + " ";
+
+        String from = "FROM ("+ select2+ aggregation2+"(rt.rate) AS agg FROM roomtype rt GROUP BY "+gb+") Temp ";
+        String where = "WHERE Temp.agg = (SELECT "+aggregation1+"(Temp.agg) FROM  (" +select2+aggregation2+"(rt.rate) AS agg FROM roomtype rt GROUP BY "+gb+") Temp)";
+
         String q = select + from + where;
+        System.out.println(q);
 
         return executeDoubleAggQuery(q);
     }
@@ -178,13 +260,44 @@ public class RoomType {
         }
         return null;
     }
-    private static Number executeDoubleAggQuery(String query) {
+//    private static Number executeDoubleAggQuery(String query) {
+//        try {
+//            Statement stmt = con.createStatement();
+//            ResultSet rs = stmt.executeQuery(query);
+//
+//            rs.next();
+//            return rs.getFloat(2);
+//
+//        }catch (SQLException e) {
+//            StringWriter sw = new StringWriter();
+//            e.printStackTrace(new PrintWriter(sw));
+//            String exceptionAsString = sw.toString();
+//            System.out.println(exceptionAsString);
+//        }
+//        return null;
+//    }
+
+    private static DefaultTableModel executeDoubleAggQuery(String query) {
         try {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
+            ResultSetMetaData rsmd = rs.getMetaData();
 
-            rs.next();
-            return rs.getFloat(1);
+            Vector<String> columnNames = new Vector<String>();
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                columnNames.add(rsmd.getColumnLabel(i));
+            }
+
+            Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+            while (rs.next()) {
+                Vector<Object> vector = new Vector<Object>();
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                    vector.add(rs.getObject(i));
+                }
+                data.add(vector);
+            }
+
+            return new DefaultTableModel(data, columnNames);
 
         }catch (SQLException e) {
             StringWriter sw = new StringWriter();
