@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.sql.*;
 import java.util.Vector;
 
+
 /**
  * Created by GL on 2017-03-25.
  */
@@ -21,6 +22,35 @@ public class Residence {
         String query = select + from + where;
         System.out.println(query);
         return executeSearchQuery(query);
+    }
+    public static DefaultTableModel searchResidenceByRoomType(boolean obrBox, boolean tbrBox, boolean fbrBox, boolean sbrBox, boolean studioBox) {
+        String select = "SELECT r.rname ";
+        String from = "FROM residence r ";
+        String nestedWhere = createdNestedWhere(obrBox, tbrBox, fbrBox, sbrBox, studioBox);
+        String where = "WHERE NOT EXISTS ((SELECT t.type FROM roomtype t " + nestedWhere + ") MINUS (SELECT m.type FROM room m WHERE r.rname=m.rname))";
+        String query = select + from + where;
+        System.out.println(query);
+        return executeSearchQuery(query);
+    }
+    public static String createdNestedWhere(boolean obrBox, boolean tbrBox, boolean fbrBox, boolean sbrBox, boolean studioBox){
+        String where = "WHERE ";
+        if (obrBox) {
+            where = where + "t.type='One Bedroom' OR ";
+        }
+        if (tbrBox) {
+            where = where + "t.type='Two Bedrooms Suite' OR ";
+        }
+        if (fbrBox) {
+            where = where + "t.type='Four Bedrooms Suite' OR ";
+        }
+        if (sbrBox) {
+            where = where + "t.type='Six Bedrooms Suite' OR ";
+        }
+        if (studioBox) {
+            where = where + "t.type='Studio' OR ";
+        }
+        where = where.substring(0, where.length()-4);
+        return where;
     }
 
     public static DefaultTableModel searchResidence(boolean rnameBox, boolean addressBox, boolean snameBox) {

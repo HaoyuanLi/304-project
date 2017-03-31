@@ -66,6 +66,27 @@ public class ResidenceSearch extends JPanel {
 
             }
         });
+
+//        private JCheckBox obrBox = new JCheckBox("One Bedrooms");
+//        private JCheckBox tbrBox = new JCheckBox("Two Bedrooms");
+//        private JCheckBox fbrBox = new JCheckBox("Four Bedrooms");
+//        private JCheckBox sbrBox = new JCheckBox("Six Bedrooms");
+//        private JCheckBox studioBox = new JCheckBox("Studio");
+//        private JButton findButton = new JButton("Find");
+        findButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!obrBox.isSelected() && !tbrBox.isSelected() && !fbrBox.isSelected() && !sbrBox.isSelected() && !studioBox.isSelected()) {
+                    JOptionPane.showMessageDialog(null, "Please select at least one roomtype", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                else {
+                    DefaultTableModel dtm = Residence.searchResidenceByRoomType(obrBox.isSelected(), tbrBox.isSelected(), fbrBox.isSelected(),
+                            sbrBox.isSelected(), studioBox.isSelected());
+                    new ResultTable(dtm).setVisible(true);
+                }
+
+            }
+        });
     }
 
     private JPanel createAttributePanel() {
