@@ -18,6 +18,7 @@ public class ResidentInterface extends JFrame {
     private JMenu optionsMenu = new JMenu("Options");
     private JMenuItem residenceMenu = new JMenuItem("Search Residences");
     private JMenuItem roomTypeMenu = new JMenuItem("Search Room Types");
+    private JMenuItem roomTypeAdvanceMenu = new JMenuItem("Room Type Advance");
     private JMenuItem changeUserMenu = new JMenuItem("Change User");
     private JMenuItem exitMenu = new JMenuItem("Exit");
 
@@ -31,6 +32,7 @@ public class ResidentInterface extends JFrame {
         searchMenu.setMargin(new Insets(0, 20, 0, 20));
         searchMenu.add(residenceMenu);
         searchMenu.add(roomTypeMenu);
+        searchMenu.add(roomTypeAdvanceMenu);
         optionsMenu.setMargin(new Insets(0, 20, 0, 20));
         optionsMenu.add(changeUserMenu);
         optionsMenu.add(exitMenu);
@@ -53,6 +55,16 @@ public class ResidentInterface extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 mainPanel.removeAll();
                 mainPanel.add(new RoomTypeSearch(WIDTH, HEIGHT));
+                mainPanel.validate();
+                mainPanel.repaint();
+            }
+        });
+
+        roomTypeAdvanceMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainPanel.removeAll();
+                mainPanel.add(new RoomTypeAdvanceSearch(WIDTH, HEIGHT));
                 mainPanel.validate();
                 mainPanel.repaint();
             }
